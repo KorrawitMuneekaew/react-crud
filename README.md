@@ -36,7 +36,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 1. Clone the repository to your local machine:
    ```bash
-   git clone https://your-repository-url.git
+   git clone https://github.com/KorrawitMuneekaew/react-crud.git
    ```
 2. Navigate to the project directory:
    ```bash
@@ -55,7 +55,7 @@ These instructions will get you a copy of the project up and running on your loc
 
 6. Start the backend server:
    ```bash
-   npm start
+   npm run dev
    ```
 7. In a new terminal, start the React frontend application:
    ```bash
