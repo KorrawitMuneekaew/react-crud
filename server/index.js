@@ -36,6 +36,23 @@ app.get("/employees", (req, res) => {
   });
 });
 
+app.get("/employeesone/:id", (req, res) => {
+  const { id } = req.params; // Get the ID from the URL
+  db.query("SELECT `id`, `fname`, `lname`, `age`, `country`, `position`, `Avertar` FROM `employees` WHERE id = ?", id, (err, result) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send("Error fetching employee data");
+    } else {
+      if (result.length > 0) {
+        res.send(result[0]); // Send the first (and hopefully only) record
+      } else {
+        res.status(404).send("Employee not found");
+      }
+    }
+  });
+});
+
+
 app.post("/create", (req, res) => {
   const FirstName = req.body.FirstName;
   const LastName = req.body.LastName;
@@ -57,27 +74,27 @@ app.post("/create", (req, res) => {
   );
 });
 
-app.put('/employees/:id', async (req, res) => {
+app.put('/employees/:id', (req, res) => {
   const { id } = req.params; // Get the ID from the URL
-  const { FirstName, LastName, Age, Country, Position, Avatar } = req.body; // Get updated values from request body
+  const { FirstName, LastName, Age, Country, Position, avertar } = req.body; // Get updated values from request body
 
   const sql = `
-      UPDATE INTO employees
-      SET FirstName = ?, LastName = ?, Age = ?, Country = ?, Position = ?, Avatar = ?
-      WHERE ID = ?
+    UPDATE employees
+    SET fname = ?, lname = ?, age = ?, country = ?, position = ?, Avertar = ?
+    WHERE id = ?
   `;
 
-  db.query(sql, [id,FirstName, LastName, Age, Country, Position, AvatarURL,], (err, result) => {
-      if (err) {
-          console.error('Error updating data:', err);
-          res.status(500).send('Error updating data');
-          return;
-      }
-      if (result.affectedRows === 0) {
-          res.status(404).send('Employee not found');
-      } else {
-          res.send('Employee updated successfully');
-      }
+  db.query(sql, [FirstName, LastName, Age, Country, Position, avertar, id], (err, result) => {
+    if (err) {
+      console.error('Error updating data:', err);
+      res.status(500).send('Error updating data');
+      return;
+    }
+    if (result.affectedRows === 0) {
+      res.status(404).send('Employee not found');
+    } else {
+      res.send('Employee updated successfully');
+    }
   });
 });
 

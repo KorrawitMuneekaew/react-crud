@@ -12,13 +12,12 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Avatar from "@mui/material/Avatar";
 import { deepOrange, } from "@mui/material/colors";
-import Link from '@mui/material/Link';
+//import Link from '@mui/material/Link';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import TableCell from '@mui/material/TableCell';
 import Stack from '@mui/material/Stack';
-
-
 
 export default function User() {
 
@@ -106,10 +105,10 @@ export default function User() {
                     <TableCell align="right">{row.position}</TableCell>
 
                     <ButtonGroup variant="text" aria-label="Basic button group">
-                      <Link href="update">
+                      <Link to={`/update/${row.id}`}>
                       <Button className="btn btn-warning">Edit</Button>
                       </Link>
-                      <Button onClick={()=>{deleteEmployee(row.id)}}>DEL</Button>
+                      <Button className="btn btn-warning" onClick={()=>{deleteEmployee(row.id)}}>DEL</Button>
                     </ButtonGroup>
                   </TableRow>
                 ))}

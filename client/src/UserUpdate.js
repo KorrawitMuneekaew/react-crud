@@ -1,124 +1,143 @@
-import React, { useState } from "react";
-import CssBaseline from "@mui/material/CssBaseline";
-import Container from "@mui/material/Container";
-import { Grid, Typography } from "@mui/material";
-import TextField from "@mui/material/TextField";
-import Button from "@mui/material/Button";
-import axios from "axios";
+import React, { useState, useEffect, useCallback } from 'react';
+import { useParams } from 'react-router-dom';
+import axios from 'axios';
+import { TextField, Button, CssBaseline, Container, Typography, Grid } from '@mui/material';
 
-export default function UserCreate() {
-  
+export default function UserUpdate() {
+  const { id } = useParams(); // Extracting the ID from the URL
+  const [employee, setEmployee] = useState({
+    FirstName: '', // Change fname to FirstName
+    LastName: '', // Change lname to LastName
+    Age: '',
+    Country: '',
+    Position: '',
+    Avatar: '', // Change avertar to Avatar
+  });
 
-  const [fname, setFirstName] = useState([]);
-  const [lname, setLastName] = useState([]);
-  const [age, setAge] = useState([]);
-  const [country, setCountry] = useState([]);
-  const [position, setPosition] = useState([]);
-  const [avatar, setAvartarURL] = useState([]);
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await axios.get(`http://localhost:3001/employeesone/${id}`); // Use backticks to interpolate the value of id
+      setEmployee({
+        FirstName: response.data.fname || '',
+        LastName: response.data.lname || '',
+        Age: response.data.age || '',
+        Country: response.data.country || '',
+        Position: response.data.position || '',
+        Avatar: response.data.avatar || '',
+      });
+      console.log(response.data.fname);
+      console.log("Fetch the data Completed");
+    } catch (error) {
+      console.error("Error fetching employee data: ", error);
+    }
+  }, [id]);
 
-  const addEmployee = () => {
-    axios.post("http://localhost:3001/create", {
-      FirstName: fname,
-      LastName: lname,
-      Age: age,
-      Country: country,
-      Position: position,
-      AvatarURL: avatar,
-    })
-    
-    .then(() => {
-        window.location.href = '/'
-    });
-};
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
-return (
-  <React.Fragment>
-    <CssBaseline />
-    <Container maxWidth="sm" sx={{ padding: 2 }}>
-      <Typography variant="h6" gutterBottom component="div">
-        Create User
-      </Typography>
-      <form>
-        <Grid container spacing={2}>
-          <Grid item xs={12}>
-            <TextField
-              id="FirstName"
-              label="First Name"
-              variant="outlined"
-              fullWidth
-              required
-              onChange={(e) => setFirstName(e.target.value)}
-            />
+  const handleChange = (prop) => (event) => {
+    setEmployee(prevState => ({
+      ...prevState,
+      [prop]: event.target.value
+    }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    console.log(employee);
+    try {
+      await axios.put(`http://localhost:3001/employees/${id}`, employee);
+      // Redirect or show a success message
+      window.location.href = '/'; // Redirect to home page after successful update
+    } catch (error) {
+      console.error("Error updating employee: ", error);
+      // Handle the error, e.g., show an error message
+    }
+  };
+
+  return (
+    <React.Fragment>
+      <CssBaseline />
+      <Container maxWidth="sm">
+        <Typography variant="h6" gutterBottom>
+          Edit Employee
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <Grid container spacing={2}>
+            <Grid item xs={12}>
+              <TextField
+                id='FirstName'
+                label="First Name"
+                variant="outlined"
+                fullWidth
+                required
+                value={employee.FirstName}
+                onChange={handleChange('FirstName')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id='LastName'
+                label="Last Name"
+                variant="outlined"
+                fullWidth
+                required
+                value={employee.LastName}
+                onChange={handleChange('LastName')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id='Age'
+                label="Age"
+                variant="outlined"
+                fullWidth
+                required
+                value={employee.Age}
+                onChange={handleChange('Age')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id='Country'
+                label="Country"
+                variant="outlined"
+                fullWidth
+                required
+                value={employee.Country}
+                onChange={handleChange('Country')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id='Position'
+                label="Position"
+                variant="outlined"
+                fullWidth
+                required
+                value={employee.Position}
+                onChange={handleChange('Position')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                id='Avatar'
+                label="Avatar URL"
+                variant="outlined"
+                fullWidth
+                value={employee.Avatar}
+                onChange={handleChange('Avatar')}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary" fullWidth>
+                Save Changes
+              </Button>
+            </Grid>
           </Grid>
-
-          <Grid item xs={12}>
-            <TextField
-              id="LastName"
-              label="Last Name"
-              variant="outlined"
-              fullWidth
-              required
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="Age"
-              label="Age"
-              variant="outlined"
-              fullWidth
-              required
-              onChange={(e) => setAge(e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="Country"
-              label="Country"
-              variant="outlined"
-              fullWidth
-              required
-              onChange={(e) => setCountry(e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="Position"
-              label="Position"
-              variant="outlined"
-              fullWidth
-              required
-              onChange={(e) => setPosition(e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6}>
-            <TextField
-              id="AvatarURL"
-              label="Avatar"
-              variant="outlined"
-              fullWidth
-              required
-              onChange={(e) => setAvartarURL(e.target.value)}
-            />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Button
-              variant="contained"
-              color="success"
-              fullWidth
-              onClick={addEmployee}
-            >
-              Create
-            </Button>
-          </Grid>
-        </Grid>
-      </form>
-    </Container>
-  </React.Fragment>
-);
+        </form>
+      </Container>
+    </React.Fragment>
+  );
 }
