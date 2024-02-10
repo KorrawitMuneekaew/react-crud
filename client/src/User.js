@@ -62,7 +62,7 @@ export default function User() {
               </Typography>
             </Box>
             <Box>
-              <Link href="create">
+              <Link to="create">
                 <Button variant="contained" endIcon={<SendIcon />}>
                   Create
                 </Button>
